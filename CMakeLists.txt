@@ -47,4 +47,8 @@ add_executable(The_village_hero_ main.cpp
         src/Group_Command/StatCommand/StatCommand.cpp
         src/Group_Command/StatCommand/StatCommand.cpp
         src/Group_Command/StatCommand/StatCommand.cpp
-        src/Group_Command/StatCommand/StatCommand.h)
+        src/Group_Command/StatCommand/StatCommand.h
+        src/Group_Command/VisitCommand/VisitCommand.cpp
+        src/Group_Command/VisitCommand/VisitCommand.h
+        src/Group_Command/EquipCommand/EquipCommand.cpp
+        src/Group_Command/EquipCommand/EquipCommand.h)

@@ -22,10 +22,14 @@ public:
     void setMonster(Monster* monster);
     void addMonster(Monster* monster);
     void delMonster(Monster* monster);
+
+    void enter(Player& player);
 private:
     int m_givingGold;
     std::vector<Monster*> m_monsters;
     Monster* m_monster{};
+
+    void fightMonster(Character *pCharacter, Monster *&pMonster);
 };
 
 

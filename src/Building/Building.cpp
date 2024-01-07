@@ -5,6 +5,7 @@
 #include "Building.h"
 
 Building::Building() : Name() {
+
 }
 
 Building::Building(const std::string &name) : Name(name) {
@@ -16,7 +17,6 @@ Building::~Building() {
 }
 
 std::string Building::getType() const {
-//    found type in Name
     std::string myName = getName();
     std::vector<std::string> types = {"Auberge", "Mine", "Dealer"};
     for (const auto & type : types) {
@@ -24,4 +24,9 @@ std::string Building::getType() const {
             return type;
         }
     }
+    return "Unknown";
+}
+
+std::string Building::getAction() const {
+    return "enter " + getName();
 }

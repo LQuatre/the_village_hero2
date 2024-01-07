@@ -14,6 +14,8 @@ public:
     ~Monster();
 
     void takeDamage(int damage);
+    int getDamage() const;
+    int getHealth() const;
 private:
     int m_damage;
     int m_health;

@@ -24,10 +24,9 @@ public:
     void displayBuildings();
 
     std::vector<Building *> getBuildingsByType(std::string type);
-
+    Building *getBuildingByNumber(int number);
 private:
     std::vector<Building*> m_buildings;
-
     void genBuildingByType(std::string type);
 };
 

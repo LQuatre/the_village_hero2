@@ -21,6 +21,7 @@ public:
     void heal(int health);
 
     void takeDamage(int damage);
+    int getDamage() const;
 
     void setGold(int gold);
     void addGold(int gold);
@@ -34,6 +35,8 @@ public:
     void setExperience(int experience);
     int getExperience() const;
     void addExperience(int experience);
+
+    std::vector<Weapon *> getWeapons();
 
 private:
     int m_health;

@@ -16,6 +16,9 @@
 #include "../Group_Command/QuitCommand/QuitCommand.h"
 #include "../Group_Command/AdminCommand/AdminCommand.h"
 #include "../Group_Command/CodeCommand/CodeCommand.h"
+#include "../Group_Command/VisitCommand/VisitCommand.h"
+#include "../Group_Command/StatCommand/StatCommand.h"
+#include "../Group_Command/EquipCommand/EquipCommand.h"
 
 bool ativatedFreeGold = false;
 
@@ -23,7 +26,6 @@ Game::Game()     {
     m_village = new Village();
     m_village->setName("konoha");
     m_village->generateBuildings();
-    m_village->displayBuildings();
     m_villages.push_back(m_village);
 
     Character& thisChar = *new Character(100, 10, nullptr);
@@ -32,7 +34,7 @@ Game::Game()     {
     m_player->setCharacter(thisChar);
     m_players.push_back(m_player);
 
-    Quete& quete1 = *new Quete("quete1", "Enter in " + m_village->getBuildingsByType("Mine")[1]->getName(), "enter "+m_village->getBuildings()[1]->getName(), 1, 1, 5);
+    Quete& quete1 = *new Quete("quete1", "Enter in " + m_village->getBuildingsByType("Mine")[1]->getName(), "enter "+m_village->getBuildingsByType("Mine")[1]->getName(), 1, 1, 5);
     m_quetes.push_back(&quete1);
     Quete& quete2 = *new Quete("quete2", "quete2", "player have >20 gold", 1, 1, 5);
     m_quetes.push_back(&quete2);
@@ -85,16 +87,27 @@ void Game::Input() {
     std::string input;
     std::cin >> input;
 
+    std::vector<Command*> commands;
     HelpCommand helpCommand;
     QuitCommand quitCommand;
     AdminCommand adminCommand;
     CodeCommand codeCommand;
+    VisitCommand visitCommand;
+    StatCommand statCommand;
+    EquipCommand equipCommand;
 
-    std::vector<Command*> commands;
     commands.push_back(&helpCommand);
     commands.push_back(&quitCommand);
     commands.push_back(&adminCommand);
     commands.push_back(&codeCommand);
+    commands.push_back(&visitCommand);
+    commands.push_back(&statCommand);
+    commands.push_back(&equipCommand);
+
+    m_commands.clear();
+    for (int i = 0; i < commands.size(); i++) {
+        m_commands.push_back(commands[i]->getCommandName());
+    }
 
     for (int i = 0; i < commands.size(); i++) {
         if (input == commands[i]->getCommandName()) {
@@ -107,17 +120,8 @@ void Game::Input() {
 
 void Game::help() {
     std::cout << "Command list available:" << std::endl;
-    std::cout << "help" << std::endl;
-    std::cout << "quit" << std::endl;
-    std::cout << "stats" << std::endl;
-    if (m_player->getAdmin()) {
-        std::cout << "admin" << std::endl;
-        std::cout << "addGold" << std::endl;
-        std::cout << "removeGold" << std::endl;
-        std::cout << "setGold" << std::endl;
-        std::cout << "addHealth" << std::endl;
-        std::cout << "removeHealth" << std::endl;
-        std::cout << "setHealth" << std::endl;
+    for (int i = 0; i < m_commands.size(); i++) {
+        std::cout << m_commands[i] << std::endl;
     }
 }
 
@@ -131,9 +135,15 @@ void Game::playerAction(std::string action) {
             std::cout << "Vous avez gagne " << m_activeQuetes[i]->getGold() << " pieces d'or" << std::endl;
             m_activeQuetes[i]->setActive(false);
             m_activeQuetes.erase(m_activeQuetes.begin() + i);
-            m_quetes[i]->setFinish(true);
-
-//            playerLevelUp();
+            m_activeQuetes[i]->setFinish(true);
+            for (int j = 0; j < m_quetes.size(); j++) {
+                if (m_quetes[j]->getName() == m_activeQuetes[i]->getName()) {
+                    m_quetes[j]->setFinish(true);
+                    m_quetes[j]->setActive(false);
+                    m_quetes.erase(m_quetes.begin() + j);
+                }
+            }
+            playerLevelUp();
         }
     }
 }
@@ -149,6 +159,50 @@ void Game::playerLevelUp() {
     }
 }
 
+void Game::visitVillage() {
+    for (int i = 0; i < m_villages.size(); i++) {
+        if (m_villages[i]->getName() == this->m_village->getName()) {
+            m_villages[i]->displayBuildings();
+        }
+    }
+    std::cout << "Where do you want to go ?" << std::endl;
+    int input;
+    std::cin >> input;
+    for (int i = 0; i < m_villages.size(); i++) {
+        if (m_villages[i]->getName() == this->m_village->getName()) {
+            Building* building = m_villages[i]->getBuildingByNumber(input);
+            if (building != nullptr) {
+                playerAction(building->getAction());
+                building->enter(*m_player);
+            }
+        }
+    }
+}
+
+void Game::stats() {
+    std::cout << "Name : " << m_player->getCharacter().getName() << std::endl;
+    std::cout << "Health : " << m_player->getCharacter().getHealth() << std::endl;
+    std::cout << "Experience : " << m_player->getCharacter().getExperience() << std::endl;
+    std::cout << "Gold : " << m_player->getCharacter().getGold() << std::endl;
+    if (m_player->getCharacterPtr()->getWeapon() != nullptr) {
+        std::cout << "Weapon : " << m_player->getCharacter().getWeapon()->getName() << std::endl;
+        std::cout << "Weapon damage : " << m_player->getCharacter().getWeapon()->getDamage() << std::endl;
+        std::cout << "Weapon price : " << m_player->getCharacter().getWeapon()->getPrice() << std::endl;
+    }
+}
+
+void Game::equipWeapon() {
+    std::cout << "Choose a weapon" << std::endl;
+    for (int i = 0; i < m_player->getCharacterPtr()->getWeapons().size(); ++i) {
+        std::cout << i+1 << " - " << m_player->getCharacterPtr()->getWeapons()[i]->getName() << " - " << m_player->getCharacterPtr()->getWeapons()[i]->getPrice() << " gold" << std::endl;
+    }
+    int choice;
+    std::cin >> choice;
+    m_player->getCharacterPtr()->setWeapon(m_player->getCharacterPtr()->getWeapons()[choice-1]);
+    std::cout << "You equip " << m_player->getCharacterPtr()->getWeapon()->getName() << std::endl;
+}
+
+
 void Game::setRunning(bool isRunning) {
     m_isRunning = isRunning;
 }
@@ -161,3 +215,6 @@ Game &Game::getInstance() {
     static Game instance;
     return instance;
 }
+
+
+

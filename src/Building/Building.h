@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include "../Name/Name.h"
+#include "../Player/Player.h"
 
 class Building : public Name {
 public:
@@ -14,7 +15,10 @@ public:
     Building(const std::string& name);
     ~Building();
     std::string getType() const;
+    virtual void enter(Player& player) = 0;
+    std::string getAction() const;
 private:
+    std::string m_type;
 };
 
 

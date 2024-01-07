@@ -13,10 +13,10 @@ Auberge::~Auberge() {
 
 }
 
-bool Auberge::BuyHeal(Character &character) {
-    if (character.getGold() >= m_price) {
-        character.removeGold(m_price);
-        healPlayer(character, m_givingCare);
+bool Auberge::BuyHeal(Character *character) {
+    if (character->getGold() >= m_price) {
+        character->removeGold(m_price);
+        healPlayer(*character, m_givingCare);
         std::cout << "Vous avez été soigné de " << m_givingCare << " points de vie." << std::endl;
         return true;
     }
@@ -31,3 +31,15 @@ void Auberge::healPlayer(Character &character, int care) {
 void Auberge::setGiveCare(int care) {
     m_givingCare = care;
 }
+
+void Auberge::enter(Player &player) {
+    std::cout << "You enter in " << getName() << std::endl;
+    std::cout << "You can buy a heal" << std::endl;
+    std::cout << "price : " << m_price << " gold" << std::endl << "Do you want to buy a heal? (y/n)" << std::endl;
+    std::string answer;
+    std::cin >> answer;
+    if (answer == "y") {
+        BuyHeal(player.getCharacterPtr());
+    }
+}
+

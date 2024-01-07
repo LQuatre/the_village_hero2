@@ -16,3 +16,11 @@ Monster::~Monster() {
 void Monster::takeDamage(int damage) {
     m_health -= damage;
 }
+
+int Monster::getDamage() const {
+    return m_damage;
+}
+
+int Monster::getHealth() const {
+    return m_health;
+}

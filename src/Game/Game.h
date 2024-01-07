@@ -34,11 +34,17 @@ public:
     void help();
     void playerAction(std::string action);
     void playerLevelUp();
+    void visitVillage();
+    void stats();
 
     // Attributes
     bool ativatedFreeGold = false;
 
     static Game &getInstance();
+
+    Player* m_player;
+
+    void equipWeapon();
 
 private:
     bool m_isRunning = false;
@@ -46,10 +52,10 @@ private:
     std::vector<Village*> m_villages;
     Village* m_village;
     std::vector<Player*> m_players;
-    Player* m_player;
     std::vector<Character*> m_characters;
     std::vector<Quete*> m_quetes;
     std::vector<Quete*> m_activeQuetes;
+    std::vector<std::string> m_commands;
 };
 
 

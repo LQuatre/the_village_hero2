@@ -5,9 +5,15 @@
 #ifndef THE_VILLAGE_HERO__STATCOMMAND_H
 #define THE_VILLAGE_HERO__STATCOMMAND_H
 
+#include "../../Game/Game.h"
+#include "../Command/Command.h"
 
-class StatCommand {
-
+class StatCommand : public Command {
+public:
+    StatCommand();
+    ~StatCommand();
+    void execute(Game& game) override;
+    const std::string& getCommandName() const override;
 };
 
 

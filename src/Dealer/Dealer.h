@@ -9,12 +9,15 @@
 #include "../Building/Building.h"
 #include "../Weapon/Weapon.h"
 #include "../Character/Character.h"
+#include "../Player/Player.h"
 
 class Dealer : public Building {
 public:
     Dealer(std::string name, const std::vector<Weapon*> &weapons);
     ~Dealer();
-    bool buyWeapon(Character &character, Weapon* weapon);
+    bool buyWeapon(Character *character, Weapon* weapon);
+
+    void enter(Player& player);
 private:
     std::vector<Weapon*> m_weapons;
 };

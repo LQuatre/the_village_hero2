@@ -29,6 +29,14 @@ void Character::takeDamage(int damage) {
     m_health -= damage;
 }
 
+int Character::getDamage() const {
+    if (m_weapon == nullptr) {
+        std::cout << "You don't have a weapon" << std::endl;
+        return 0;
+    }
+    return m_weapon->getDamage();
+}
+
 void Character::setGold(int gold) {
     m_gold = gold;
 }
@@ -51,6 +59,10 @@ void Character::setWeapon(Weapon* weapon) {
 
 Weapon* Character::getWeapon() const {
     return m_weapon;
+}
+
+std::vector<Weapon*> Character::getWeapons() {
+    return m_weapons;
 }
 
 void Character::addWeapon(Weapon *weapon) {
